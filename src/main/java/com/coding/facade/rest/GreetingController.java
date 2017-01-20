@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.coding.facade.rest.client.CodingDiscoveryClient;
+import com.coding.facade.rest.client.CodingServiceClient;
+import com.coding.facade.rest.client.CodingServiceClientFactory;
 
 @RestController
 @RefreshScope
@@ -34,8 +35,8 @@ public class GreetingController {
     String codingServicePassword;
     
     @Autowired
-    CodingDiscoveryClient codingDiscoveryClient;
-
+    CodingServiceClientFactory codingSerivceClientFactory;
+    
     @RequestMapping(method = RequestMethod.GET, value = "/greeting/version", headers = "accept=application/json")
     @ResponseBody
     public String getVersion(HttpServletRequest request, HttpServletResponse response) {
@@ -60,7 +61,8 @@ public class GreetingController {
         }
         
         // call coding.hola using different client.  it's a json string
-        String greetingFromCodingService = codingDiscoveryClient.getHello(codingServiceUsername, codingServicePassword); 
+        CodingServiceClient codingServiceClient = codingSerivceClientFactory.getClient("discoveryClient");
+        String greetingFromCodingService = codingServiceClient.getHello(codingServiceUsername, codingServicePassword); 
         String jsonStr = 
                 "{"
                 + "\"hostname\":\"" +  hostname + "\"" + ","

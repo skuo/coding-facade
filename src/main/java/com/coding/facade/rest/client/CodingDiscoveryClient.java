@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class CodingDiscoveryClient {
+public class CodingDiscoveryClient implements CodingServiceClient {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
