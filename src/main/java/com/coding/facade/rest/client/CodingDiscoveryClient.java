@@ -35,7 +35,7 @@ public class CodingDiscoveryClient {
         };
     }
     
-    public String getHello() {
+    public String getHello(String username, String password) {
         RestTemplate restTemplate = new RestTemplate();
         List<ServiceInstance> instances = discoveryClient.getInstances("coding");
 
@@ -48,7 +48,7 @@ public class CodingDiscoveryClient {
                 restTemplate.exchange(
                         serviceUri,
                         HttpMethod.GET,
-                        new HttpEntity<String>(createHeaders("user","CodingBreak")), 
+                        new HttpEntity<String>(createHeaders(username,password)), 
                         String.class);
         
         return restExchange.getBody();

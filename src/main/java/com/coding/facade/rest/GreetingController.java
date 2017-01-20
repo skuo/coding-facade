@@ -27,6 +27,12 @@ public class GreetingController {
     @Value("${example.property}")
     private String exampleProperty;
     
+    @Value("${coding.service.username}")
+    String codingServiceUsername;
+    
+    @Value("${coding.service.password}")
+    String codingServicePassword;
+    
     @Autowired
     CodingDiscoveryClient codingDiscoveryClient;
 
@@ -53,9 +59,8 @@ public class GreetingController {
             hostname = "unknown";
         }
         
-        // call coding.hola using different client
-        String greetingFromCodingService = codingDiscoveryClient.getHello(); // it's a json string
-        
+        // call coding.hola using different client.  it's a json string
+        String greetingFromCodingService = codingDiscoveryClient.getHello(codingServiceUsername, codingServicePassword); 
         String jsonStr = 
                 "{"
                 + "\"hostname\":\"" +  hostname + "\"" + ","
