@@ -15,7 +15,7 @@
 
 ##Debug app as jar
 ```bash
-java -server -Xms1700M -Xmx1700M -Xdebug -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y -jar build/libs/coding-facade-0.1.0.jar --spring.profiles.active=dev > console.log 2>&1 &
+java -server -Xms1700M -Xmx1700M -Xdebug -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y -jar build/libs/coding-facade-0.0.2.jar --spring.profiles.active=dev > console.log 2>&1 &
 ```
 
 ##Run app as jar

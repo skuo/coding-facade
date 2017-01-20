@@ -8,12 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.coding.facade.rest.client.CodingDiscoveryClient;
 
 @RestController
 @RefreshScope
@@ -23,6 +26,9 @@ public class GreetingController {
 
     @Value("${example.property}")
     private String exampleProperty;
+    
+    @Autowired
+    CodingDiscoveryClient codingDiscoveryClient;
 
     @RequestMapping(method = RequestMethod.GET, value = "/greeting/version", headers = "accept=application/json")
     @ResponseBody
@@ -46,10 +52,15 @@ public class GreetingController {
         } catch (UnknownHostException uhe) {
             hostname = "unknown";
         }
+        
+        // call coding.hola using different client
+        String greetingFromCodingService = codingDiscoveryClient.getHello(); // it's a json string
+        
         String jsonStr = 
                 "{"
                 + "\"hostname\":\"" +  hostname + "\"" + ","
-                + "\"exampleProperty\":\"" + exampleProperty + "\"" 
+                + "\"exampleProperty\":\"" + exampleProperty + "\"" + ","
+                + "\"greeting from coding service\":" + greetingFromCodingService 
                 + "}";
         log.info(jsonStr);
         return jsonStr;
