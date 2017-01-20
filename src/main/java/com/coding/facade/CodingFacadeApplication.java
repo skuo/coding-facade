@@ -5,8 +5,10 @@ import static springfox.documentation.builders.PathSelectors.regex;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
@@ -23,6 +25,13 @@ public class CodingFacadeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CodingFacadeApplication.class, args);
+    }
+
+    @LoadBalanced
+    @Bean
+    // define a RestTemplate bean to be user in CodingRestTemplateClient
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
     }
     
     @Bean

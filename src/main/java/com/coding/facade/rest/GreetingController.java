@@ -69,6 +69,7 @@ public class GreetingController {
                 "{"
                 + "\"hostname\":\"" +  hostname + "\"" + ","
                 + "\"exampleProperty\":\"" + exampleProperty + "\"" + ","
+                + "\"clientType\":\"" + clientType + "\"" + ","
                 + "\"greeting from coding service\":" + greetingFromCodingService 
                 + "}";
         log.info(jsonStr);

@@ -1,14 +1,11 @@
 package com.coding.facade.rest.client;
 
 import java.nio.charset.Charset;
-import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,11 +14,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class CodingDiscoveryClient implements CodingServiceClient {
+public class CodingRestTemplateClient implements CodingServiceClient {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private DiscoveryClient discoveryClient;
+    RestTemplate restTemplate;
 
     @SuppressWarnings("serial")
     private HttpHeaders createHeaders(String username, String password) {
@@ -34,22 +31,20 @@ public class CodingDiscoveryClient implements CodingServiceClient {
             }
         };
     }
-    
-    public String getHello(String username, String password) {
-        List<ServiceInstance> instances = discoveryClient.getInstances("coding");
-        if (instances.size()==0) 
-            return null;
-        String serviceUri = String.format("%s/coding/hola",instances.get(0).getUri().toString());
-        log.info("!!!! SERVICE URI:  " + serviceUri);
 
-        RestTemplate restTemplate = new RestTemplate();
+    public String getHello(String username, String password){
+        //serviceUri is of this form. http://{applicationid}/v1/organizations/{organizationId}
+        String serviceUri = String.format("http://coding/coding/hola");
+        log.info(">>>> SERVICE URI for applicationId=coding:  " + serviceUri);
+
+        // resetTemplate make sure of Ribbon and is client-side load balanced
         ResponseEntity<String> restExchange =
                 restTemplate.exchange(
                         serviceUri,
                         HttpMethod.GET,
                         new HttpEntity<String>(createHeaders(username,password)), 
                         String.class);
-        
+
         return restExchange.getBody();
     }
 }

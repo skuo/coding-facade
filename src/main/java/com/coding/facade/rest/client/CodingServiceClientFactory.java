@@ -8,11 +8,17 @@ public class CodingServiceClientFactory {
     @Autowired
     CodingDiscoveryClient codingDiscoveryClient;
 
+    @Autowired
+    CodingRestTemplateClient codingRestTemplateClient;
+
     public CodingServiceClient getClient(String clientType) {
         CodingServiceClient client = null;
         switch(clientType) {
         case "discoveryClient":
             client = codingDiscoveryClient;
+            break;
+        case "restTemplate":
+            client = codingRestTemplateClient;
             break;
         default:
             break;
