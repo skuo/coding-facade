@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -51,8 +52,9 @@ public class GreetingController {
      * A simple endpoint to print out host IP address.  It is useful in testing Kubernetes
      * @return
      */
-    @RequestMapping(value = "/greeting/hello", method = RequestMethod.GET, produces = "application/json")
-    public String hola() {
+    @RequestMapping(value = "/greeting/hello/{clientType}", method = RequestMethod.GET, produces = "application/json")
+    public String hola(@PathVariable String clientType) {
+        log.info("calling coding service with client = " + clientType);
         String hostname = null;
         try {
             hostname = InetAddress.getLocalHost().getHostAddress();
@@ -61,7 +63,7 @@ public class GreetingController {
         }
         
         // call coding.hola using different client.  it's a json string
-        CodingServiceClient codingServiceClient = codingSerivceClientFactory.getClient("discoveryClient");
+        CodingServiceClient codingServiceClient = codingSerivceClientFactory.getClient(clientType);
         String greetingFromCodingService = codingServiceClient.getHello(codingServiceUsername, codingServicePassword); 
         String jsonStr = 
                 "{"
