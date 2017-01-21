@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.coding.facade.config.ServiceConfig;
 import com.coding.facade.rest.client.CodingFeignClient;
 import com.coding.facade.rest.client.CodingServiceClient;
 import com.coding.facade.rest.client.CodingServiceClientFactory;
@@ -27,20 +27,14 @@ public class GreetingController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${example.property}")
-    private String exampleProperty;
-    
-    @Value("${coding.service.username}")
-    String codingServiceUsername;
-    
-    @Value("${coding.service.password}")
-    String codingServicePassword;
-    
     @Autowired
     CodingServiceClientFactory codingSerivceClientFactory;
     
     @Autowired
     CodingFeignClient codingFeignClient;
+
+    @Autowired
+    ServiceConfig serviceConfig;
     
     @RequestMapping(method = RequestMethod.GET, value = "/greeting/version", headers = "accept=application/json")
     @ResponseBody
@@ -72,12 +66,13 @@ public class GreetingController {
             greetingFromCodingService = codingFeignClient.hola();
         } else {
             CodingServiceClient codingServiceClient = codingSerivceClientFactory.getClient(clientType);
-            greetingFromCodingService = codingServiceClient.getHello(codingServiceUsername, codingServicePassword);
+            greetingFromCodingService = codingServiceClient.getHello(serviceConfig.getCodingServiceUsername(),
+                    serviceConfig.getCodingServicePassword());
         }
         String jsonStr = 
                 "{"
                 + "\"hostname\":\"" +  hostname + "\"" + ","
-                + "\"exampleProperty\":\"" + exampleProperty + "\"" + ","
+                + "\"exampleProperty\":\"" + serviceConfig.getExampleProperty() + "\"" + ","
                 + "\"clientType\":\"" + clientType + "\"" + ","
                 + "\"greeting from coding service\":" + greetingFromCodingService 
                 + "}";
