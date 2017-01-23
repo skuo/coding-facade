@@ -41,10 +41,17 @@ public class CodingRestTemplateClient implements CodingServiceClient {
         };
     }
 
-    @HystrixCommand(fallbackMethod = "buildFallbackHello", 
+    @HystrixCommand(
+            fallbackMethod = "buildFallbackHello",
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = HYSTRIX_PROPERTY_TIMEOUTINMS_STR) }
-            )
+              @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value=HYSTRIX_PROPERTY_TIMEOUTINMS_STR)
+            },
+            threadPoolKey = "codingDiscoveryClientPool",
+            threadPoolProperties = {
+              @HystrixProperty(name="coreSize", value="30"),
+              @HystrixProperty(name="maxQueueSize", value="10")
+            }
+          )
     public String getHello(String username, String password){
         log.info("HystrixProperty execution.isolation.thread.timeoutInMilliseconds=" + HYSTRIX_PROPERTY_TIMEOUTINMS);
         // sleep 11000 milliseconds 1 out of 3 times

@@ -48,6 +48,11 @@ public class CodingDiscoveryClient implements CodingServiceClient {
             fallbackMethod = "buildFallbackHello",
             commandProperties = {
               @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value=HYSTRIX_PROPERTY_TIMEOUTINMS_STR)
+            },
+            threadPoolKey = "codingDiscoveryClientPool",
+            threadPoolProperties = {
+              @HystrixProperty(name="coreSize", value="30"),
+              @HystrixProperty(name="maxQueueSize", value="10")
             }
           )
     public String getHello(String username, String password) {

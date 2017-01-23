@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import feign.Request;
 import feign.auth.BasicAuthRequestInterceptor;
 
 /**
@@ -33,10 +32,21 @@ public class CodingFeignClientConfig{
         return new BasicAuthRequestInterceptor(codingServiceUsername, codingServicePassword);
     }
 
+    // best page on Feign client timeout: https://github.com/spring-cloud/spring-cloud-netflix/issues/696
+/*
     @Bean
     public Request.Options options() {
+        log.info(String.format("<<<< IN CodingFeignClientConfig timeout=%d", FIVE_SECONDS_IN_MS));
         return new Request.Options(FIVE_SECONDS_IN_MS, FIVE_SECONDS_IN_MS);
     }
+    @Bean
+    Request.Options requestOptions(ConfigurableEnvironment env){
+        int ribbonReadTimeout = env.getProperty("ribbon.ReadTimeout", int.class, 6000);
+        int ribbonConnectionTimeout = env.getProperty("ribbon.ConnectTimeout", int.class, 3000);
+        log.info(String.format("<<<< IN CodingFeignClientConfig ribbonReadTimeout=%d, robbonConnectionTimeout=%d",
+                ribbonReadTimeout, ribbonConnectionTimeout));
 
-    
+        return new Request.Options(ribbonConnectionTimeout, ribbonReadTimeout);
+    }    
+*/
 }
