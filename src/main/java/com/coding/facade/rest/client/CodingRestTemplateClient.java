@@ -41,11 +41,10 @@ public class CodingRestTemplateClient implements CodingServiceClient {
         };
     }
 
-    @HystrixCommand(
-      commandProperties = {
-        @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value=HYSTRIX_PROPERTY_TIMEOUTINMS_STR)
-      }
-    )
+    @HystrixCommand(fallbackMethod = "buildFallbackHello", 
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = HYSTRIX_PROPERTY_TIMEOUTINMS_STR) }
+            )
     public String getHello(String username, String password){
         log.info("HystrixProperty execution.isolation.thread.timeoutInMilliseconds=" + HYSTRIX_PROPERTY_TIMEOUTINMS);
         // sleep 11000 milliseconds 1 out of 3 times
@@ -64,5 +63,12 @@ public class CodingRestTemplateClient implements CodingServiceClient {
                         String.class);
 
         return restExchange.getBody();
+    }
+
+    @SuppressWarnings("unused")
+    private String buildFallbackHello(String username, String password) {
+        return "{"
+                   + "\"suggestion\": \"fallback suggestion --timed out, please retry again\"" 
+                + "}";
     }
 }

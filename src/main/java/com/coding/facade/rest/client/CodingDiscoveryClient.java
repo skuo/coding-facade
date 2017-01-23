@@ -45,6 +45,7 @@ public class CodingDiscoveryClient implements CodingServiceClient {
     }
     
     @HystrixCommand(
+            fallbackMethod = "buildFallbackHello",
             commandProperties = {
               @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value=HYSTRIX_PROPERTY_TIMEOUTINMS_STR)
             }
@@ -69,5 +70,12 @@ public class CodingDiscoveryClient implements CodingServiceClient {
                         String.class);
         
         return restExchange.getBody();
+    }
+    
+    @SuppressWarnings("unused")
+    private String buildFallbackHello(String username, String password) {
+        return "{"
+                   + "\"suggestion\": \"fallback suggestion --retry again\"" 
+                + "}";
     }
 }
