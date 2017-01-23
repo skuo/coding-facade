@@ -15,10 +15,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.coding.facade.util.RandomUtil;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 @Component
 public class CodingRestTemplateClient implements CodingServiceClient {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final String HYSTRIX_PROPERTY_TIMEOUTINMS_STR = "12000";
+    private final Integer HYSTRIX_PROPERTY_TIMEOUTINMS = Integer.valueOf(HYSTRIX_PROPERTY_TIMEOUTINMS_STR);
 
     @Autowired
     RestTemplate restTemplate;
@@ -38,8 +41,13 @@ public class CodingRestTemplateClient implements CodingServiceClient {
         };
     }
 
-    @HystrixCommand
+    @HystrixCommand(
+      commandProperties = {
+        @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value=HYSTRIX_PROPERTY_TIMEOUTINMS_STR)
+      }
+    )
     public String getHello(String username, String password){
+        log.info("HystrixProperty execution.isolation.thread.timeoutInMilliseconds=" + HYSTRIX_PROPERTY_TIMEOUTINMS);
         // sleep 11000 milliseconds 1 out of 3 times
         randomUtil.randomRunLong(11000, 3); 
         
