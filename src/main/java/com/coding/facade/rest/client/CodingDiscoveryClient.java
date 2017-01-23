@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.coding.facade.util.RandomUtil;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
 @Component
 public class CodingDiscoveryClient implements CodingServiceClient {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -23,6 +26,9 @@ public class CodingDiscoveryClient implements CodingServiceClient {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    @Autowired
+    RandomUtil randomUtil;
+    
     @SuppressWarnings("serial")
     private HttpHeaders createHeaders(String username, String password) {
         return new HttpHeaders() {
@@ -35,7 +41,11 @@ public class CodingDiscoveryClient implements CodingServiceClient {
         };
     }
     
+    @HystrixCommand
     public String getHello(String username, String password) {
+        // sleep 11000 milliseconds 1 out of 3 times
+        randomUtil.randomRunLong(11000, 3); 
+        
         List<ServiceInstance> instances = discoveryClient.getInstances("coding");
         if (instances.size()==0) 
             return null;
