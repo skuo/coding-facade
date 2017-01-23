@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.netflix.governator.annotations.binding.Request;
+
 import feign.auth.BasicAuthRequestInterceptor;
 
 @Configuration
 public class CodingFeignClientConfig{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+    
+    public static final int FIVE_SECONDS_IN_MS = 5000;
+    
     @Value("${coding.service.username}")
     String codingServiceUsername;
     
@@ -24,4 +28,10 @@ public class CodingFeignClientConfig{
                 codingServiceUsername, codingServicePassword));
         return new BasicAuthRequestInterceptor(codingServiceUsername, codingServicePassword);
     }
+/*
+    @Bean
+    public Request.Options options() {
+        return new Request.Options(FIVE_SECONDS_IN_MS, FIVE_SECONDS_IN_MS);
+    }
+*/
 }
