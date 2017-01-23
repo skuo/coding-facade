@@ -48,7 +48,7 @@ public class CodingRestTemplateClient implements CodingServiceClient {
     public String getHello(String username, String password){
         log.info("HystrixProperty execution.isolation.thread.timeoutInMilliseconds=" + HYSTRIX_PROPERTY_TIMEOUTINMS);
         // sleep 11000 milliseconds 1 out of 3 times
-        randomUtil.randomRunLong(11000, 3); 
+        //randomUtil.randomRunLong(11000, 3); 
         
         //serviceUri is of this form. http://{applicationid}/v1/organizations/{organizationId}
         String serviceUri = String.format("http://coding/coding/hola");
